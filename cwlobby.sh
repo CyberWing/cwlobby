@@ -1,47 +1,40 @@
 #!/bin/bash
 
-lobby(){
-	echo "Welcome"
-	echo "1. Register"
-	echo "2. Login"
-	while read -p "Choose: " lobbychoice
-	do
-	case $lobbychoice in
-		1) register
-			;;
-		2) login
-			;;
-		*) echo "Bad Input"
-	esac
-	done
-}
-
-register(){
-	read -p "What will be your username: " regusername
-	read -p "What will be your password: " regpasswd
-	read -p "What will be your email: " regemail
-	read -p "What is your real name: " regrealname
-
-	echo $regusername":"$regpasswd":"$regemail":"$regrealname >> userdb.db
-}
-
 login(){
 	read -p "Username: " loginusername
 	read -p "Password: " loginpasswd
 
-	for x in `cat userdb.db | cut -d':' -f1`
-	do
+	userlist=( `cat userdb.db | cut -d':' -f1` )
+	passwordlist=( `cat userdb.db | cut -d':' -f2` )
+	authcount=0
+
+	until [ $authcount -ge `expr 2 \* ${#userlist[@]}` ]; do
+	for x in $userlist; do
 		if [ "$x" = $loginusername ]
 		then
-			for y in `cat userdb.db | cut -d':' -f2`
-			do
+			for y in $passwordlist; do
 				if [ $y = $loginpasswd ]
 				then
 					echo "Welcome "$(cat userdb.db | grep $loginusername | cut -d':' -f4)
-					break
+					authcount=`expr 3 \* ${#userlist[@]}`
+				else
+					echo -n "."
+					authcount=`expr $authcount \+ 1`
 				fi
 			done
+		else
+			echo -n "."
+			authcount=`expr $authcount \+ 1`
 		fi
 	done
+	done
+
+	if [ $authcount -le `expr 2 \* ${#userlist[@]}` ]; then
+		echo "[ Invalid Credentials ]"
+		exit
+	fi
 }
-lobby
+
+
+login
+echo "Other Codes HERE! To be continued"
