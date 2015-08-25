@@ -90,6 +90,22 @@ Private IP Addresses
    +------------------------------------------------------------------------+"
 }
 
+endecrypt(){
+	read -p "1. Encrypt; 2. Decrypt; 3. Digest(MD5): " endecwhich
+	if [ $endecwhich -eq 1 ]; then
+		read -p "Input: " endecEinput
+		echo "Encrypted Text: "$(echo -n "$endecEinput" | openssl enc -base64)
+	elif [ $endecwhich -eq 2 ]; then
+		read -p "Input: " endecDinput
+		echo "Decrypted Text: "$(echo "$endecDinput" | openssl enc -base64 -d)
+	elif [ $endecwhich -eq 3 ]; then
+		read -p "Input: " endecDgstInput
+		echo "Digested Text: " && echo -n "$endecDgstInput" | openssl dgst -md5 | awk '{print $2}'
+	else
+		echo "Error Input"
+	fi
+}
+
 menu(){
   echo "Welcome to Cyber Wings Lobby"
   echo "1. IP Classes List"
@@ -107,8 +123,7 @@ menu(){
        endecrypt
        horbar
       ;;
-    99) horbar
-       echo  "==================== BYE ===================="
+    99)echo  "==================== BYE ===================="
        exit 0
       ;;
     *) echo "invalid input"
