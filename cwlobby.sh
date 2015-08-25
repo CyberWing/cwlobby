@@ -106,10 +106,17 @@ endecrypt(){
 	fi
 }
 
+lookup(){
+	read -p "(A,AAAA,MX,NS,SOA,TXT) Type: " nsl_type
+	read -p "The domain: " nsl_domain
+	nslookup -type=$nsl_type $nsl_domain
+}
+
 menu(){
   echo "Welcome to Cyber Wings Lobby"
   echo "1. IP Classes List"
   echo "2. En/Decrypt"
+  echo "3. Lookup"
   echo "99. Exit"
   while true; do
   read -p "Your Choice: " userinput
@@ -121,6 +128,10 @@ menu(){
       ;;
     2) horbar
        endecrypt
+       horbar
+      ;;
+    3) horbar
+       lookup
        horbar
       ;;
     99)echo  "==================== BYE ===================="
